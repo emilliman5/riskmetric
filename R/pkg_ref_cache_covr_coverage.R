@@ -19,7 +19,7 @@ pkg_ref_cache.covr_coverage.pkg_source <- function(x, ...) {
   # use custom 'code' to avoid triggering errors upon test failure.
   # practically identical to covr::package_coverage with the exclusion of
   # `if (result != 0L) show_failures(out_dir)`
-  expr <- bquote(tools::testInstalledPackage(.(x$name), types = 'tests'))
+  expr <- bquote(tools::testInstalledPackage(.(x$name), types = 'tests', outDir = tempdir()))
   cnsl <- capture_expr_output({
     res <- covr::package_coverage(
       path = x$path,
@@ -27,5 +27,6 @@ pkg_ref_cache.covr_coverage.pkg_source <- function(x, ...) {
       code = deparse(expr))
   })
 
+  unlink(paste0(tempdir(),"/", x$name,"-test"), recursive = TRUE)
   res
 }
