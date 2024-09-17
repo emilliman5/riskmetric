@@ -27,24 +27,20 @@ attr(assess_reverse_dependencies, "label") <- "List of reverse dependencies a pa
 #'
 #' Score a package for the number of reverse dependencies it has; regularized
 #' Convert the number of reverse dependencies \code{length(x)} into a validation
-#' score [0,1] \deqn{ 1 / (1 + exp(-0.5 * (sqrt(length(x)) + sqrt(5)))) }
+#' score [0,1] \deqn{ 1 - 1 / (1 + (5 / length(x))^2.5) }
 #'
-#' The scoring function is the classic logistic curve \deqn{
-#' 1 / (1 + exp(-k(x-x[0])) } with a square root scale for the number of reverse dependencies
-#' \eqn{x = sqrt(length(x))}, sigmoid midpoint is 5 reverse dependencies, ie. \eqn{x[0] =
-#' sqrt(5)}, and logistic growth rate of \eqn{k = 0.5}.
 #'
 #' \deqn{ 1 / (1 + -0.5 * exp(sqrt(length(x)) - sqrt(5))) }
 
 #' @eval roxygen_score_family("reverse_dependencies", dontrun = TRUE)
-#' @return numeric value between \code{1} (high number of reverse dependencies) and
-#'   \code{0} (low number of reverse dependencies)
+#' @return numeric value between \code{0} (high number of reverse dependencies) and
+#'   \code{1} (low number of reverse dependencies)
 #'
 #' @export
 metric_score.pkg_metric_reverse_dependencies <- function(x,...){
-  1 / (1 + exp(-0.5 * (sqrt(length(x)) - sqrt(5))))
+  1 - 1 / (1 + (5 / length(x))^2.5)
 }
 
 attributes(metric_score.pkg_metric_reverse_dependencies)$label <-
-  "The (log10) number of packages that depend on this package."
+  "The reqularized number of packages that depend on this package."
 
